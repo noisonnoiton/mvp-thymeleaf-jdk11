@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mvp-thymeleaf
+  name: mvp-thymeleaf-jdk11
   labels:
-    app: mvp-thymeleaf
+    app: mvp-thymeleaf-jdk11
 spec:
   ports:
   - port: 8080
     targetPort: 8080
-    name: mvp-thymeleaf
+    name: mvp-thymeleaf-jdk11
   selector:
-    app: mvp-thymeleaf
+    app: mvp-thymeleaf-jdk11

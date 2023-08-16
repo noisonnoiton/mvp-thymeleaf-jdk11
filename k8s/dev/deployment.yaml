@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mvp-thymeleaf
+  name: mvp-thymeleaf-jdk11
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mvp-thymeleaf
+      app: mvp-thymeleaf-jdk11
   template:
     metadata:
       labels:
-        app: mvp-thymeleaf
+        app: mvp-thymeleaf-jdk11
     spec:
       containers:
       - env:
         - name: JAVA_OPTS
           value: -Dspring.profiles.active=dev
-        name: mvp-thymeleaf
-        image: kloudbank/mvp-thymeleaf:0.0.1
+        name: mvp-thymeleaf-jdk11
+        image: kloudbank/mvp-thymeleaf-jdk11:0.0.1
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
