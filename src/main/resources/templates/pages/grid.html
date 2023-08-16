@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<!-- Default Layout Import-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{common/layouts/defaultLayout}" layout:fragment="Content">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/employee.css" />
+    <link rel="stylesheet" href="tui-grid/dist/tui-pagination.css" />
+    <link rel="stylesheet" href="tui-grid/dist/tui-grid.css" />
+    <script src="js/xlsx.full.min.js"></script>
+    <script src="tui-grid/dist/tui-pagination.js"></script>
+    <script src="tui-grid/dist/tui-grid.js"></script>
+    <script src="js/jquery-3.6.4.js"></script>
+    <script src="js/common.js"></script>
+</head>
+
+<body>
+    <div id="page-content-wrapper">
+        <div class="container-fluid center">
+            <div class="container-fluid">
+                <div class="container mt-2">
+                    <div class="scroll">
+                        <h1>Employees List</h1>
+                        <div class="main">
+                            <div class="main-search">
+                                <div>
+                                    <span class="strong-text">Name</span> <input type="text" id="nameInput" placeholder="Enter Name" class="search-input-text">
+                                    <span class="strong-text">E-mail</span> <input type="text" id="emailInput" placeholder="Enter Email" class="search-input-text">
+                                </div>
+                                <div style="margin-left: 30%;">
+                                    <button onclick="searchEmployees()" class="search-button">Search</button>
+                                </div>
+                            </div>
+                            <div id="grid"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+
+<script th:inline="javascript">
+    $(window).on('load', function () {
+        searchEmployees();
+    });
+
+    var grid = new tui.Grid({
+
+        el: document.getElementById('grid'),
+        data: [],
+        draggable: true,
+        pageOptions: {
+            useClient: true,
+            perPage: 15
+        },
+        rowHeaders: [],
+        copyOptions: {
+            useFormattedValue: true,
+            useListItemText: true,
+        },
+        width: 1250,
+        columnOptions: {
+            resizable: true,
+            minWidth: 100
+        },
+        columns: [
+            {
+                header: '아이디',
+                name: 'id',
+                sortable: true,
+                align: 'center',
+                width: 70,
+            },
+            {
+                header: '이름',
+                name: 'name',
+                sortable: true,
+                align: 'center',
+                filter: {
+                    type: 'text',
+                    operator: 'OR',
+                    showClearBtn: true
+                }
+            },
+            {
+                header: 'E-Mail',
+                name: 'email',
+                sortable: true,
+                width: 'auto',
+            },
+            {
+                header: '혈액형',
+                name: 'bloodType',
+                sortable: true,
+                align: 'center',
+                filter: 'select',
+                width: 80,
+            },
+            {
+                header: '성별',
+                name: 'gender',
+                sortable: true,
+                align: 'center',
+                filter: 'select'
+            },
+            {
+                header: 'IP주소',
+                name: 'ipAddress',
+                sortable: true,
+                align: 'center'
+            },
+            {
+                header: '전화번호',
+                name: 'phone',
+                sortable: true,
+                align: 'center'
+            },
+            {
+                header: '회사명',
+                name: 'companyName',
+                sortable: true,
+                align: 'center',
+                filter: 'select'
+            },
+            {
+                header: '직무',
+                name: 'jobTitle',
+                sortable: true,
+                align: 'center',
+                filter: 'select'
+            },
+            {
+                header: '대학',
+                name: 'university',
+                sortable: true,
+                align: 'center',
+                filter: 'select'
+            },
+            {
+                header: '주민번호',
+                name: 'ssn',
+                sortable: true,
+                align: 'center'
+            }
+        ],    
+    });
+
+    function updateGridData(data) {
+        grid.resetData(data);
+    }
+
+    function searchEmployees() {
+        var name = $('#nameInput').val();
+        var email = $('#emailInput').val();
+
+        var searchDto = {
+            name: name,
+            email: email
+        };
+
+        // API Backend
+        var host = /*[[${apiBackend}]]*/ "";
+
+        // var url = host + "/api/v1/employees/search";
+        var url = "/v1/employees/search";
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            dataType: "json",
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify(searchDto),
+            success: function (data) {
+                updateGridData(data);
+            },
+            error: function () {
+                console.error("검색 요청이 실패했습니다.");
+            }
+        });
+    }
+</script>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<!-- Default Layout Import-->
+<html lang="en"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/defaultLayout}"
+	layout:fragment="Content"
+>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/employee.css" />
+    <script src="js/jquery-3.6.4.js"></script>
+    <script src="js/common.js"></script>
+</head>
+
+<body>
+    <div id="page-content-wrapper">
+        <div class="container-fluid center">
+            <div class="container-fluid">
+                <div class="container mt-2">
+                    <div class="scroll">
+                        <h1>Auth by BCM</h1>
+                        <div>
+							<p>인증 성공</p>
+                        </div>
+						<div style="color: grey;">
+							<p>인증 cookie 삭제 Test</p>
+							<p>1. 아래 버튼 클릭하여 인증 cookie 삭제</p>
+							<p>2. 상단의 "Auth" 메뉴를 선택해서 확인</p>
+							<button onclick="delete_auth_cookie()">Cookie 삭제</button>
+						</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+	function delete_auth_cookie() {
+		delete_cookie('draco.token-payload');
+
+		alert('인증 cookie 삭제 완료');
+	}
+</script>

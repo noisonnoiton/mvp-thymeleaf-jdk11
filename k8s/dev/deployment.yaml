@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mvp-thymeleaf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mvp-thymeleaf
+  template:
+    metadata:
+      labels:
+        app: mvp-thymeleaf
+    spec:
+      containers:
+      - env:
+        - name: JAVA_OPTS
+          value: -Dspring.profiles.active=dev
+        name: mvp-thymeleaf
+        image: kloudbank/mvp-thymeleaf:0.0.1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+            failureThreshold: 3
+            successThreshold: 1
+            httpGet:
+                path: /actuator/health/readiness
+                port: 8080
+                scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 3
+        livenessProbe:
+            failureThreshold: 3
+            successThreshold: 1
+            httpGet:
+                path: /actuator/health/liveness
+                port: 8080
+                scheme: HTTP
+            initialDelaySeconds: 20
+            periodSeconds: 3
+        # resources:
+        #   limits:
+        #     cpu: 1000m
+        #     memory: 512Mi
+        #   requests:
+        #     cpu: 200m
+        #     memory: 256Mi

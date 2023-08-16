@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<!-- Default Layout Import-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{common/layouts/defaultLayout}" layout:fragment="Content">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/employee.css" />
+    <link rel="stylesheet" href="tui-chart/dist/toastui-chart.css" />
+    <script src="tui-chart/dist/toastui-chart.js"></script>
+    <script src="js/jquery-3.6.4.js"></script>
+    <script src="js/common.js"></script>
+</head>
+
+<body>
+    <div id="page-content-wrapper">
+        <div class="container-fluid center">
+            <div class="container-fluid">
+                <div class="container mt-2">
+                    <div class="scroll">
+                        <h1>Employees Chart</h1>
+                        <div class="main">
+                            <div class="main-search">
+                                <div>
+                                    <span class="strong-text">Name</span> <input type="text" id="nameInput" placeholder="Enter Name" class="search-input-text">
+                                    <span class="strong-text">E-mail</span> <input type="text" id="emailInput" placeholder="Enter Email" class="search-input-text">
+                                </div>
+                                <div style="margin-left: 50%;">
+                                    <button onclick="searchCharts()" class="search-button">Search</button>
+                                </div>
+                            </div>
+                            <div class="chart-area">
+                                <div id="pie-chart"></div>
+                                <div id="bar-chart"></div>
+                                <div id="line-column-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+
+<script th:inline="javascript">
+    $(window).on('load', function () {
+        searchCharts();
+    });
+
+    // Pie chart sample
+    const pieChartOptions = {
+        chart: {
+            animation: false,
+            height: 500,
+            title: 'Gender 별 현황'
+        },
+        series: {
+            radiusRange: ['40%', '100%'],
+            dataLabels: {
+                visible: true,
+                formatter: (value) => value,
+                pieSeriesName: {
+                    visible: true,
+                    anchor: 'center',
+                },
+            },
+        },
+        legend: {
+            visible: true,
+            align: 'right',
+        },
+        exportMenu: {
+            visible: false,
+        },
+    };
+
+    const pieChartData = {
+        categories: ['Gender'],
+        series: [],
+    }
+
+    const pieChart = new toastui.Chart.pieChart({
+        el: document.getElementById('pie-chart'),
+        data: pieChartData,
+        options: pieChartOptions,
+    });
+
+    function updatePieChartData(data) {
+        pieChartData.series = data;
+        pieChart.setData(pieChartData);
+    }
+
+    function searchEmployeesByGender() {
+        var name = $('#nameInput').val();
+        var email = $('#emailInput').val();
+
+        var searchDto = {
+            name: name,
+            email: email
+        };
+        
+        // API Backend
+        var host = /*[[${apiBackend}]]*/ "";
+
+        var url = host + "/api/v1/employees/chart/gender";
+        // var url = "/v1/employees/chart/gender";
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            dataType: "json",
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify(searchDto),
+            success: function (data) {
+                updatePieChartData(data);
+                
+            },
+            error: function () {
+                console.error("검색 요청이 실패했습니다.");
+            }
+        });
+    }
+
+    // Bar chart sample
+    const barChartOptions = {
+        chart: {
+            animation: false,
+            height: 500,
+            title: '혈액형 별 현황'
+        },
+        series: {
+            dataLabels: {
+                visible: true,
+                formatter: (value) => value,
+            },
+        },
+        legend: {
+            visible: false,
+            align: 'right',
+        },
+        exportMenu: {
+            visible: false,
+        },
+    };
+
+    const barChartData = {
+        categories: ['A', 'AB', 'B', 'O'],
+        series: [
+          {
+            name: 'Blood Type',
+            data: [],
+            colorByCategories: true,
+          },
+        ],
+      };
+
+      const barChart = new toastui.Chart.barChart({
+        el: document.getElementById('bar-chart'),
+        data: barChartData,
+        options: barChartOptions,
+    });
+
+    function updateBarChartData(data) {
+        for (let item of data) {
+            barChartData.series[0].data.push(item.data);
+        }
+        barChart.setData(barChartData);
+    }
+
+    function searchEmployeesByBloodType() {
+        var name = $('#nameInput').val();
+        var email = $('#emailInput').val();
+
+        var searchDto = {
+            name: name,
+            email: email
+        };
+        
+        // API Backend
+        var host = /*[[${apiBackend}]]*/ "";
+
+        var url = host + "/api/v1/employees/chart/bloodtype";
+        // var url = "/v1/employees/chart/bloodtype";
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            dataType: "json",
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify(searchDto),
+            success: function (data) {
+                updateBarChartData(data);
+                
+            },
+            error: function () {
+                console.error("검색 요청이 실패했습니다.");
+            }
+        });
+    }
+
+    // Column-Line Combination chart sample
+    const columnLineChartData = {
+        categories: ['Agender', 'Bigender', 'Female', 'Genderqueer', 'Male', 'Non-binary', 'Polygender'],
+        series: {
+            column: [
+                {
+                    name: 'A',
+                    data: [],
+                },
+                {
+                    name: 'AB',
+                    data: [],
+                },
+                {
+                    name: 'B',
+                    data: [],
+                },
+                {
+                    name: 'O',
+                    data: [],
+                },                
+            ],
+            line: [
+                {
+                    name: 'Average',
+                    data: [],
+                },
+            ],
+        },
+    };
+
+    const columnLineOptions = {
+        animation: false,
+        chart: {
+            height: 500,
+            title: 'Gender 별 혈액형 현황',
+            format: '1,000'
+        },
+        yAxis: {
+            title: 'Count',
+        },
+        xAxis: {
+            title: 'Gender / Blood Type',
+        },
+        exportMenu: {
+            visible: false,
+        },
+    };
+
+    const columnLineChart = new toastui.Chart.columnLineChart({
+        el: document.getElementById('line-column-chart'),
+        data: columnLineChartData,
+        options: columnLineOptions,
+    });
+
+    function updateColumnLineChartData(data) {
+
+        // Initialize data
+        for (let columnItem of columnLineChartData.series.column) {
+            columnItem.data = [];
+        }
+        for (let lineItem of columnLineChartData.series.line) {
+            lineItem.data = [];
+        }
+
+        for (let [i, item] of data.entries()) {
+            if (item.BLOOD_TYPE === 'A') {
+                columnLineChartData.series.column[0].data.push(item.DATA);
+            } else if (item.BLOOD_TYPE === 'AB') {
+                columnLineChartData.series.column[1].data.push(item.DATA);
+            } else if (item.BLOOD_TYPE === 'B') {
+                columnLineChartData.series.column[2].data.push(item.DATA);
+            } else if (item.BLOOD_TYPE === 'O') {
+                columnLineChartData.series.column[3].data.push(item.DATA);
+            }
+
+            if(i%4 == 0) {
+                columnLineChartData.series.line[0].data.push(item.AVG_DATA);
+            }
+
+        }
+        columnLineChart.setData(columnLineChartData);
+    }
+
+    function searchEmployeesByGenderBloodType() {
+        var name = $('#nameInput').val();
+        var email = $('#emailInput').val();
+
+        var searchDto = {
+            name: name,
+            email: email
+        };
+        
+        // API Backend
+        var host = /*[[${apiBackend}]]*/ "";
+
+        var url = host + "/api/v1/employees/chart/combination";
+        // var url = "/v1/employees/chart/combination";
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            dataType: "json",
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify(searchDto),
+            success: function (data) {
+                updateColumnLineChartData(data);
+            },
+            error: function () {
+                console.error("검색 요청이 실패했습니다.");
+            }
+        });
+    }
+
+    function searchCharts() {
+        searchEmployeesByGender();
+        searchEmployeesByBloodType();
+        searchEmployeesByGenderBloodType();
+    }
+</script>

@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mvp-thymeleaf
+  # annotations:
+  #   nginx.ingress.kubernetes.io/auth-url: "http://bcm.skinnovation.com/api/v2/sso/auth-url?domain=libslab.mvp.skinnovation.com"
+  #   nginx.ingress.kubernetes.io/auth-signin: "http://bcm.skinnovation.com/api/v2/sso/auth-signin?domain=libslab.mvp.skinnovation.com"
+  #   nginx.ingress.kubernetes.io/configuration-snippet: |
+  #     auth_request_set    $auth_cookie1 $upstream_http_x_header1;
+  #     auth_request_set    $auth_cookie2 $upstream_http_x_header2;
+  #     add_header          Set-Cookie $auth_cookie1;
+  #     add_header          Set-Cookie $auth_cookie2;  
+spec:
+  # ingressClassName: ingress-internal
+  ingressClassName: nginx
+  rules:
+  - host: mvp.nogada.kubepia.net
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: mvp-thymeleaf
+            port:
+              number: 8080
