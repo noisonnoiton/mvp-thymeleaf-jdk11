@@ -49,6 +49,16 @@
         searchCharts();
     });
 
+    function getSearchDto() {
+        var name = $('#nameInput').val();
+        var email = $('#emailInput').val();
+
+        return {
+            name: name,
+            email: email
+        };
+    }
+
     // Pie chart sample
     const pieChartOptions = {
         chart: {
@@ -81,31 +91,29 @@
         series: [],
     }
 
-    const pieChart = new toastui.Chart.pieChart({
-        el: document.getElementById('pie-chart'),
-        data: pieChartData,
-        options: pieChartOptions,
-    });
-
+    let pieChart;
     function updatePieChartData(data) {
         pieChartData.series = data;
-        pieChart.setData(pieChartData);
+
+        if (pieChart) {
+            pieChart.destroy();
+        }
+
+        pieChart = new toastui.Chart.pieChart({
+            el: document.getElementById('pie-chart'),
+            data: pieChartData,
+            options: pieChartOptions,
+        });
     }
 
     function searchEmployeesByGender() {
-        var name = $('#nameInput').val();
-        var email = $('#emailInput').val();
-
-        var searchDto = {
-            name: name,
-            email: email
-        };
+        var searchDto = getSearchDto();
         
         // API Backend
         var host = /*[[${apiBackend}]]*/ "";
 
-        var url = host + "/api/v1/employees/chart/gender";
-        // var url = "/v1/employees/chart/gender";
+        // var url = host + "/api/v1/employees/chart/gender";
+        var url = "/v1/employees/chart/gender";
 
         $.ajax({
             url: url,
@@ -146,43 +154,47 @@
     };
 
     const barChartData = {
-        categories: ['A', 'AB', 'B', 'O'],
+        categories: [],
         series: [
-          {
+            {
             name: 'Blood Type',
             data: [],
             colorByCategories: true,
-          },
+            },
         ],
-      };
+    };
 
-      const barChart = new toastui.Chart.barChart({
-        el: document.getElementById('bar-chart'),
-        data: barChartData,
-        options: barChartOptions,
-    });
-
+    let barChart;
     function updateBarChartData(data) {
+
+        if (barChart) {
+            barChart.destroy();
+        }
+
+        // Initialize data
+        barChartData.categories = [];
+        barChartData.series[0].data = [];
+
         for (let item of data) {
+            barChartData.categories.push(item.name);
             barChartData.series[0].data.push(item.data);
         }
-        barChart.setData(barChartData);
+
+        barChart = new toastui.Chart.barChart({
+            el: document.getElementById('bar-chart'),
+            data: barChartData,
+            options: barChartOptions,
+        });
     }
 
     function searchEmployeesByBloodType() {
-        var name = $('#nameInput').val();
-        var email = $('#emailInput').val();
-
-        var searchDto = {
-            name: name,
-            email: email
-        };
+        var searchDto = getSearchDto();
         
         // API Backend
         var host = /*[[${apiBackend}]]*/ "";
 
-        var url = host + "/api/v1/employees/chart/bloodtype";
-        // var url = "/v1/employees/chart/bloodtype";
+        // var url = host + "/api/v1/employees/chart/bloodtype";
+        var url = "/v1/employees/chart/bloodtype";
 
         $.ajax({
             url: url,
@@ -249,13 +261,13 @@
         },
     };
 
-    const columnLineChart = new toastui.Chart.columnLineChart({
-        el: document.getElementById('line-column-chart'),
-        data: columnLineChartData,
-        options: columnLineOptions,
-    });
 
+    let columnLineChart;
     function updateColumnLineChartData(data) {
+
+        if (columnLineChart) {
+            columnLineChart.destroy();
+        }
 
         // Initialize data
         for (let columnItem of columnLineChartData.series.column) {
@@ -281,23 +293,22 @@
             }
 
         }
-        columnLineChart.setData(columnLineChartData);
+
+        columnLineChart = new toastui.Chart.columnLineChart({
+            el: document.getElementById('line-column-chart'),
+            data: columnLineChartData,
+            options: columnLineOptions,
+        });
     }
 
     function searchEmployeesByGenderBloodType() {
-        var name = $('#nameInput').val();
-        var email = $('#emailInput').val();
-
-        var searchDto = {
-            name: name,
-            email: email
-        };
+        var searchDto = getSearchDto();
         
         // API Backend
         var host = /*[[${apiBackend}]]*/ "";
 
-        var url = host + "/api/v1/employees/chart/combination";
-        // var url = "/v1/employees/chart/combination";
+        // var url = host + "/api/v1/employees/chart/combination";
+        var url = "/v1/employees/chart/combination";
 
         $.ajax({
             url: url,
