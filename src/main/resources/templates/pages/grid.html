@@ -48,109 +48,112 @@
         searchEmployees();
     });
 
-    var grid = new tui.Grid({
+    let grid;
+    function updateGridData(gridData) {
+        if (grid) {
+            grid.destroy();
+        }
+        
+        grid = new tui.Grid({
 
-        el: document.getElementById('grid'),
-        data: [],
-        draggable: true,
-        pageOptions: {
-            useClient: true,
-            perPage: 15
-        },
-        rowHeaders: [],
-        copyOptions: {
-            useFormattedValue: true,
-            useListItemText: true,
-        },
-        width: 1250,
-        columnOptions: {
-            resizable: true,
-            minWidth: 100
-        },
-        columns: [
-            {
-                header: '아이디',
-                name: 'id',
-                sortable: true,
-                align: 'center',
-                width: 70,
+            el: document.getElementById('grid'),
+            data: gridData,
+            draggable: true,
+            pageOptions: {
+                useClient: true,
+                perPage: 15
             },
-            {
-                header: '이름',
-                name: 'name',
-                sortable: true,
-                align: 'center',
-                filter: {
-                    type: 'text',
-                    operator: 'OR',
-                    showClearBtn: true
+            rowHeaders: [],
+            copyOptions: {
+                useFormattedValue: true,
+                useListItemText: true,
+            },
+            width: 1250,
+            columnOptions: {
+                resizable: true,
+                minWidth: 100
+            },
+            columns: [
+                {
+                    header: '아이디',
+                    name: 'id',
+                    sortable: true,
+                    align: 'center',
+                    width: 70,
+                },
+                {
+                    header: '이름',
+                    name: 'name',
+                    sortable: true,
+                    align: 'center',
+                    filter: {
+                        type: 'text',
+                        operator: 'OR',
+                        showClearBtn: true
+                    }
+                },
+                {
+                    header: 'E-Mail',
+                    name: 'email',
+                    sortable: true,
+                    width: 'auto',
+                },
+                {
+                    header: '혈액형',
+                    name: 'bloodType',
+                    sortable: true,
+                    align: 'center',
+                    filter: 'select',
+                    width: 80,
+                },
+                {
+                    header: '성별',
+                    name: 'gender',
+                    sortable: true,
+                    align: 'center',
+                    filter: 'select'
+                },
+                {
+                    header: 'IP주소',
+                    name: 'ipAddress',
+                    sortable: true,
+                    align: 'center'
+                },
+                {
+                    header: '전화번호',
+                    name: 'phone',
+                    sortable: true,
+                    align: 'center'
+                },
+                {
+                    header: '회사명',
+                    name: 'companyName',
+                    sortable: true,
+                    align: 'center',
+                    filter: 'select'
+                },
+                {
+                    header: '직무',
+                    name: 'jobTitle',
+                    sortable: true,
+                    align: 'center',
+                    filter: 'select'
+                },
+                {
+                    header: '대학',
+                    name: 'university',
+                    sortable: true,
+                    align: 'center',
+                    filter: 'select'
+                },
+                {
+                    header: '주민번호',
+                    name: 'ssn',
+                    sortable: true,
+                    align: 'center'
                 }
-            },
-            {
-                header: 'E-Mail',
-                name: 'email',
-                sortable: true,
-                width: 'auto',
-            },
-            {
-                header: '혈액형',
-                name: 'bloodType',
-                sortable: true,
-                align: 'center',
-                filter: 'select',
-                width: 80,
-            },
-            {
-                header: '성별',
-                name: 'gender',
-                sortable: true,
-                align: 'center',
-                filter: 'select'
-            },
-            {
-                header: 'IP주소',
-                name: 'ipAddress',
-                sortable: true,
-                align: 'center'
-            },
-            {
-                header: '전화번호',
-                name: 'phone',
-                sortable: true,
-                align: 'center'
-            },
-            {
-                header: '회사명',
-                name: 'companyName',
-                sortable: true,
-                align: 'center',
-                filter: 'select'
-            },
-            {
-                header: '직무',
-                name: 'jobTitle',
-                sortable: true,
-                align: 'center',
-                filter: 'select'
-            },
-            {
-                header: '대학',
-                name: 'university',
-                sortable: true,
-                align: 'center',
-                filter: 'select'
-            },
-            {
-                header: '주민번호',
-                name: 'ssn',
-                sortable: true,
-                align: 'center'
-            }
-        ],    
-    });
-
-    function updateGridData(data) {
-        grid.resetData(data);
+            ],    
+        });
     }
 
     function searchEmployees() {
